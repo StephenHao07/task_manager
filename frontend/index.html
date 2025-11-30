@@ -16,14 +16,43 @@
             <div class="subtitle">Simple, fast and clean</div>
           </div>
         </div>
-
+        <button
+          id="darkModeToggle"
+          class="btn btn-ghost"
+          onclick="toggleDarkMode()"
+        >
+          Toggle Dark Mode
+        </button>
       </header>
 
       <div class="controls" role="region" aria-label="Add task">
         <div class="input">
-          <input id="taskInput" type="text" placeholder="What do you want to do?" aria-label="New task" />
+          <input
+            id="taskInput"
+            type="text"
+            placeholder="What do you want to do?"
+            aria-label="New task"
+          />
+          <input id="dueDateInput" type="date" aria-label="Due date" />
+          <select id="priorityInput" aria-label="Priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
-        <button id="addBtn" class="btn btn-primary" onclick="addTask()">Add</button>
+        <button id="addBtn" class="btn btn-primary" onclick="addTask()">
+          Add
+        </button>
+      </div>
+
+      <div class="search-controls">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search tasks..."
+          aria-label="Search tasks"
+          onkeyup="searchTasks()"
+        />
       </div>
 
       <main>
@@ -31,7 +60,7 @@
           <!-- Tasks will be rendered here -->
         </ul>
 
-        <div id="empty" class="empty" style="display:none">
+        <div id="empty" class="empty" style="display: none">
           No tasks yet — add your first task.
         </div>
       </main>

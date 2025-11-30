@@ -35,7 +35,8 @@ def add_task():
     data = request.json
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO tasks (title) VALUES (%s)", (data["title"],))
+    cursor.execute("INSERT INTO tasks (title, due_date, priority) VALUES (%s, %s, %s)",
+                   (data["title"], data.get("due_date"), data.get("priority", "medium")))
     db.commit()
     db.close()
     return jsonify({"message": "Task added successfully"})
@@ -45,8 +46,8 @@ def update_task(id):
     data = request.json
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("UPDATE tasks SET title=%s, is_done=%s WHERE id=%s",
-                   (data["title"], data["is_done"], id))
+    cursor.execute("UPDATE tasks SET title=%s, is_done=%s, due_date=%s, priority=%s WHERE id=%s",
+                   (data["title"], data["is_done"], data.get("due_date"), data.get("priority"), id))
     db.commit()
     db.close()
     return jsonify({"message": "Task updated"})
@@ -74,6 +75,8 @@ def init_db():
             CREATE TABLE IF NOT EXISTS tasks (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
+                due_date DATE,
+                priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
                 is_done TINYINT(1) DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
