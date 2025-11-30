@@ -1,70 +1,180 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Modern, clean design for the Task Manager app */
+
+:root{
+  --bg-1:#0f1724;
+  --bg-2:#0b3b5a;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent-1:#6d28d9;
+  --accent-2:#06b6d4;
+  --danger:#ef4444;
+  --success:#10b981;
+  --glass: rgba(255,255,255,0.04);
+  --radius:12px;
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  padding: 20px;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(900px 400px at 10% 10%, rgba(109,40,217,0.08), transparent),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  color: #0b1220;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
 }
 
-.container {
+/* App container */
+.app {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  padding: 30px;
+  max-width: 880px;
+  background: linear-gradient(180deg,#fff,#fbfdff);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 12px 48px rgba(2,6,23,0.45);
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.04);
+  animation: pop .32s ease;
 }
 
-h1 {
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 28px;
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.brand {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.logo {
+  width:48px; height:48px;
+  border-radius:10px;
+  background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  color:#fff; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 8px 22px rgba(13,27,55,0.12);
+}
+.title { font-size:20px; font-weight:700; }
+.subtitle { font-size:12px; color:var(--muted); }
+
+/* Controls */
+.controls {
+  display:flex;
+  gap:12px;
+  margin-bottom: 18px;
+  align-items:center;
+}
+.input {
+  flex:1;
+  display:flex;
+  gap:8px;
+}
+.input input[type="text"] {
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #e6e9ef;
+  background:#fbfbfd;
+  font-size:15px;
+  transition: box-shadow .16s ease, border-color .16s ease;
+}
+.input input[type="text"]:focus {
+  outline:none;
+  border-color:var(--accent-1);
+  box-shadow: 0 8px 30px rgba(109,40,217,0.06);
 }
 
-li {
-  margin: 10px 0;
-  padding: 12px 15px;
-  background: #f8f9fa;
-  border-left: 4px solid #667eea;
-  border-radius: 6px;
-  list-style: none;
-  transition: all 0.3s ease;
+/* Buttons */
+.btn {
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary {
+  background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
+  color:white;
+  box-shadow: 0 8px 22px rgba(13,27,55,0.12);
+}
+.btn-ghost {
+  background:transparent;
+  border:1px solid #e6e9ef;
+  color:var(--muted);
+}
+.btn:active { transform: translateY(1px); }
+
+/* Task list */
+.task-list { list-style: none; display:flex; flex-direction:column; gap:12px; padding:0; margin:0; }
+
+.task {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  border:1px solid #f0f3f7;
+  box-shadow: 0 6px 18px rgba(12,18,36,0.04);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.task:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 44px rgba(12,18,36,0.08);
+  border-color: rgba(109,40,217,0.06);
 }
 
-li:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
+/* Left area: checkbox + title */
+.task-left { display:flex; gap:12px; align-items:center; flex:1; min-width:0; }
+.checkbox {
+  width:20px; height:20px; border-radius:6px; border:2px solid #e6e9ef;
+  display:inline-grid; place-items:center; cursor:pointer;
 }
-
-input, button {
-  padding: 10px 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.checkbox.checked {
+  background: linear-gradient(90deg,var(--success),#34d399);
+  border-color:transparent; color:#fff;
 }
-
-input {
-  width: 70%;
-  background: #f8f9fa;
+.task-title {
+  font-size:15px; color:#081125;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
+.task-title.done { text-decoration:line-through; color:var(--muted); }
 
-button {
-  width: 25%;
-  background: #667eea;
-  color: white;
-  cursor: pointer;
-  border: none;
-  margin-left: 5%;
-  transition: background 0.3s ease;
+/* Meta / actions */
+.meta { display:flex; gap:8px; align-items:center; }
+.small { font-size:12px; color:var(--muted); padding:6px 8px; border-radius:8px; background:var(--glass); }
+
+/* Action buttons */
+.actions { display:flex; gap:8px; align-items:center; }
+.action-btn {
+  padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-size:13px;
 }
+.action-btn.edit { background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:white; }
+.action-btn.delete { background: linear-gradient(90deg,#ff7a7a,#ff5252); color:white; }
+.action-btn.toggle { background:#f3f4f6; color:var(--muted); }
 
-button:hover {
-  background: #764ba2;
+/* Empty state */
+.empty { text-align:center; padding:36px; color:var(--muted); border-radius:8px; border:1px dashed #eef2ff; background:linear-gradient(180deg, rgba(13,27,55,0.01), transparent); }
+
+/* Small screens */
+@media (max-width:720px) {
+  .app { padding:18px; }
+  .header { flex-direction:column; align-items:flex-start; gap:8px; }
+  .controls { flex-direction:column; align-items:stretch; }
+  .meta { display:none; }
+  .task { flex-direction:column; align-items:flex-start; gap:10px; }
+  .actions { align-self:stretch; justify-content:flex-end; }
 }

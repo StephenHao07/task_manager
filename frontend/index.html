@@ -1,16 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Task Manager</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Task Manager</h1>
+    <div class="app" role="application" aria-label="Task Manager">
+      <header class="header">
+        <div class="brand">
+          <div class="logo">TM</div>
+          <div>
+            <div class="title">Task Manager</div>
+            <div class="subtitle">Simple, fast and clean</div>
+          </div>
+        </div>
 
-    <input type="text" id="taskInput" placeholder="Enter task" />
-    <button onclick="addTask()">Add Task</button>
+        <div class="meta small">Local • Sync when ready</div>
+      </header>
 
-    <ul id="taskList"></ul>
+      <div class="controls" role="region" aria-label="Add task">
+        <div class="input">
+          <input id="taskInput" type="text" placeholder="What do you want to do?" aria-label="New task" />
+        </div>
+        <button id="addBtn" class="btn btn-primary" onclick="addTask()">Add</button>
+      </div>
+
+      <main>
+        <ul id="taskList" class="task-list" aria-live="polite">
+          <!-- Tasks will be rendered here -->
+        </ul>
+
+        <div id="empty" class="empty" style="display:none">
+          No tasks yet — add your first task.
+        </div>
+      </main>
+    </div>
 
     <script src="script.js"></script>
   </body>
