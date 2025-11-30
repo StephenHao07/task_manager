@@ -8,11 +8,13 @@ app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 CORS(app)
 
 def get_connection():
+    # Read DB configuration from environment variables to support CI and local overrides
     return mysql.connector.connect(
-        host="localhost",
-        user="root",       # your MySQL username
-        password="",       # your MySQL password
-        database="task_manager"
+        host=os.environ.get('DB_HOST', 'localhost'),
+        user=os.environ.get('DB_USER', 'root'),
+        password=os.environ.get('DB_PASSWORD', ''),
+        database=os.environ.get('DB_NAME', 'task_manager'),
+        port=int(os.environ.get('DB_PORT', 3306))
     )
 
 @app.route('/')

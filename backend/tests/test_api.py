@@ -1,9 +1,24 @@
-import app
+try:
+    from backend import app
+except Exception:
+    import app
+import pytest
 
-def test_add_task():
-    result = app.add_task().json
-    assert "message" in result
 
-def test_get_tasks():
-    result = app.get_tasks().json
-    assert type(result) == list
+@pytest.fixture
+def client():
+    return app.test_client()
+
+
+def test_add_task(client):
+    rv = client.post('/tasks', json={'title': 'Test Task'})
+    assert rv.status_code in (200, 201)
+    data = rv.get_json()
+    assert data and 'message' in data
+
+
+def test_get_tasks(client):
+    rv = client.get('/tasks')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    assert isinstance(data, list)
