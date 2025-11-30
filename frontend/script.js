@@ -1,16 +1,38 @@
 let tasksCache = [];
 let filteredTasks = [];
+let currentView = "active";
 
 async function fetchTasks() {
   try {
-    const res = await fetch("/tasks");
+    const res = await fetch(`/tasks?view=${currentView}`);
     const tasks = await res.json();
     tasksCache = tasks || [];
     filteredTasks = [...tasksCache];
-    renderTasks(filteredTasks);
+    filterTasks();
+    updateToggleButton();
   } catch (err) {
     console.error("Failed to fetch tasks", err);
   }
+}
+
+function updateToggleButton() {
+  const btn = document.getElementById("toggleViewBtn");
+  if (currentView === "active") {
+    btn.textContent = "View Archive 📁";
+  } else {
+    btn.textContent = "View Active 📋";
+  }
+}
+
+function toggleView() {
+  currentView = currentView === "active" ? "archive" : "active";
+  fetchTasks();
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "N/A";
+  const date = new Date(dateStr);
+  return date.toLocaleString();
 }
 
 function renderTasks(tasks) {
@@ -20,6 +42,10 @@ function renderTasks(tasks) {
 
   if (!tasks || tasks.length === 0) {
     empty.style.display = "block";
+    empty.textContent =
+      currentView === "active"
+        ? "No active tasks — add your first task."
+        : "No archived tasks.";
     return;
   }
   empty.style.display = "none";
@@ -28,7 +54,7 @@ function renderTasks(tasks) {
     const li = document.createElement("li");
     li.className = `task priority-${task.priority || "medium"}`;
 
-    // left area: checkbox + title + due date
+    // left area: checkbox + title + priority badge + due date + times
     const left = document.createElement("div");
     left.className = "task-left";
 
@@ -43,6 +69,11 @@ function renderTasks(tasks) {
     title.textContent = task.title;
     title.title = task.title;
 
+    const priorityBadge = document.createElement("div");
+    priorityBadge.className = `priority-badge priority-${task.priority}`;
+    priorityBadge.textContent =
+      task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+
     const dueDate = document.createElement("div");
     dueDate.className = "small due-date";
     if (task.due_date) {
@@ -54,9 +85,22 @@ function renderTasks(tasks) {
       dueDate.textContent = "No due date";
     }
 
+    const created = document.createElement("div");
+    created.className = "small";
+    created.textContent = `Created: ${formatDate(task.created_at)}`;
+
+    const completed = document.createElement("div");
+    completed.className = "small";
+    if (task.completed_at) {
+      completed.textContent = `Completed: ${formatDate(task.completed_at)}`;
+    }
+
     left.appendChild(checkbox);
     left.appendChild(title);
+    left.appendChild(priorityBadge);
     left.appendChild(dueDate);
+    left.appendChild(created);
+    if (task.completed_at) left.appendChild(completed);
 
     // actions: toggle + delete
     const actions = document.createElement("div");
@@ -71,7 +115,7 @@ function renderTasks(tasks) {
     deleteBtn.className = "action-btn delete";
     deleteBtn.textContent = "Delete";
     deleteBtn.addEventListener("click", () => {
-      if (confirm("Delete this task?")) deleteTask(task.id);
+      if (confirm("Permanently delete this task?")) deleteTask(task.id);
     });
 
     actions.appendChild(toggleBtn);
@@ -138,12 +182,15 @@ async function deleteTask(id) {
   }
 }
 
-function searchTasks() {
+function filterTasks() {
   const searchInput = document
     .getElementById("searchInput")
     .value.toLowerCase();
-  filteredTasks = tasksCache.filter((task) =>
-    task.title.toLowerCase().includes(searchInput)
+  const priorityFilter = document.getElementById("priorityFilter").value;
+  filteredTasks = tasksCache.filter(
+    (task) =>
+      (priorityFilter === "all" || task.priority === priorityFilter) &&
+      task.title.toLowerCase().includes(searchInput)
   );
   renderTasks(filteredTasks);
 }

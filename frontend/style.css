@@ -66,7 +66,9 @@ body.dark-mode .app {
 
 body.dark-mode .input input[type="text"],
 body.dark-mode .input input[type="date"],
-body.dark-mode .input select {
+body.dark-mode .input select,
+body.dark-mode .search-controls input,
+body.dark-mode .search-controls select {
   background: #374151;
   border-color: #4b5563;
   color: #e6e9ef;
@@ -74,7 +76,9 @@ body.dark-mode .input select {
 
 body.dark-mode .input input[type="text"]:focus,
 body.dark-mode .input input[type="date"]:focus,
-body.dark-mode .input select:focus {
+body.dark-mode .input select:focus,
+body.dark-mode .search-controls input:focus,
+body.dark-mode .search-controls select:focus {
   border-color: var(--accent-1);
   box-shadow: 0 8px 30px rgba(109, 40, 217, 0.12);
 }
@@ -104,6 +108,10 @@ body.dark-mode .checkbox.checked {
 body.dark-mode .btn-ghost {
   border-color: var(--border);
   color: var(--muted);
+}
+
+body.dark-mode .priority-badge {
+  color: #fff;
 }
 
 /* App container */
@@ -186,10 +194,13 @@ body.dark-mode .btn-ghost {
 
 /* Search controls */
 .search-controls {
+  display: flex;
+  gap: 8px;
   margin-bottom: 18px;
 }
-.search-controls input {
-  width: 100%;
+.search-controls input,
+.search-controls select {
+  flex: 1;
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -197,10 +208,16 @@ body.dark-mode .btn-ghost {
   font-size: 15px;
   color: var(--text-primary);
 }
-.search-controls input:focus {
+.search-controls input:focus,
+.search-controls select:focus {
   outline: none;
   border-color: var(--accent-1);
   box-shadow: 0 8px 30px rgba(109, 40, 217, 0.06);
+}
+
+/* View controls */
+.view-controls {
+  margin-bottom: 18px;
 }
 
 /* Buttons */
@@ -269,13 +286,31 @@ body.dark-mode .btn-ghost {
   border-left: 4px solid #ef4444;
 }
 
-/* Left area: checkbox + title + due date */
+.priority-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+.priority-badge.priority-low {
+  background: #10b981;
+}
+.priority-badge.priority-medium {
+  background: #eab308;
+}
+.priority-badge.priority-high {
+  background: #ef4444;
+}
+
+/* Left area: checkbox + title + priority + due date + times */
 .task-left {
   display: flex;
   gap: 12px;
   align-items: center;
   flex: 1;
   min-width: 0;
+  flex-wrap: wrap;
 }
 .checkbox {
   width: 20px;
@@ -419,6 +454,9 @@ body.dark-mode .btn-ghost {
   .input {
     flex-direction: column;
   }
+  .search-controls {
+    flex-direction: column;
+  }
   .meta {
     display: none;
   }
@@ -426,6 +464,10 @@ body.dark-mode .btn-ghost {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+  .task-left {
+    flex-direction: column;
+    align-items: flex-start;
   }
   .actions {
     align-self: stretch;

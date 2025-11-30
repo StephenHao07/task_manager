@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 import mysql.connector
 import os
 from flask_cors import CORS
+from datetime import datetime
 
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
@@ -23,9 +24,16 @@ def index():
 
 @app.route("/tasks", methods=["GET"])
 def get_tasks():
+    view = request.args.get('view', 'all')
     db = get_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM tasks")
+    if view == 'active':
+        where = "WHERE is_done = 0"
+    elif view == 'archive':
+        where = "WHERE is_done = 1"
+    else:
+        where = ""
+    cursor.execute(f"SELECT * FROM tasks {where} ORDER BY created_at DESC")
     tasks = cursor.fetchall()
     db.close()
     return jsonify(tasks)
@@ -46,8 +54,18 @@ def update_task(id):
     data = request.json
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("UPDATE tasks SET title=%s, is_done=%s, due_date=%s, priority=%s WHERE id=%s",
-                   (data["title"], data["is_done"], data.get("due_date"), data.get("priority"), id))
+
+    set_completed = ''
+    params = [data.get("title"), data.get("is_done"), data.get("due_date"), data.get("priority"), id]
+
+    if 'is_done' in data:
+        if data['is_done'] == 1:
+            set_completed = ', completed_at = CURRENT_TIMESTAMP'
+        else:
+            set_completed = ', completed_at = NULL'
+
+    query = f"UPDATE tasks SET title=%s, is_done=%s, due_date=%s, priority=%s{set_completed} WHERE id=%s"
+    cursor.execute(query, params)
     db.commit()
     db.close()
     return jsonify({"message": "Task updated"})
@@ -78,6 +96,7 @@ def init_db():
                 due_date DATE,
                 priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
                 is_done TINYINT(1) DEFAULT 0,
+                completed_at TIMESTAMP NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         ''')

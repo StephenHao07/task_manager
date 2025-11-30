@@ -51,8 +51,24 @@
           type="text"
           placeholder="Search tasks..."
           aria-label="Search tasks"
-          onkeyup="searchTasks()"
+          onkeyup="filterTasks()"
         />
+        <select
+          id="priorityFilter"
+          aria-label="Priority filter"
+          onchange="filterTasks()"
+        >
+          <option value="all">All Priorities</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <div class="view-controls">
+        <button id="toggleViewBtn" class="btn btn-ghost" onclick="toggleView()">
+          View Archive 📁
+        </button>
       </div>
 
       <main>
